@@ -1,5 +1,12 @@
 # pixi environments
 .pixi/*
 !.pixi/config.toml
+
+# Build output
 build/
+
+# Tracy repository
 tracy/
+
+# clangd
+.cache/

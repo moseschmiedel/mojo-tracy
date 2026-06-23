@@ -1,4 +1,6 @@
 #include <chrono>
+#include <client/tracy_rpmalloc.hpp>
+#include <common/TracySystem.hpp>
 #include <cstddef>
 #include <cstdint>
 #include <mutex>
@@ -6,7 +8,7 @@
 #include <thread>
 #include <unordered_set>
 
-#include <tracy/TracyC.h>
+#include "tracy/Tracy.hpp"
 
 #if defined(_WIN32)
 #define MT_EXPORT __declspec(dllexport)
@@ -51,15 +53,14 @@ const char *intern_string(const char *data, size_t size) {
   return result.first->c_str();
 }
 
-uint64_t pack_zone_context(TracyCZoneCtx ctx) {
-  return (uint64_t(uint32_t(ctx.active)) << 32) | uint64_t(ctx.id);
+using ZoneHandle = tracy::ScopedZone *;
+
+uint64_t pack_zone_handle(ZoneHandle zone) {
+  return reinterpret_cast<uint64_t>(zone);
 }
 
-TracyCZoneCtx unpack_zone_context(uint64_t handle) {
-  TracyCZoneCtx ctx;
-  ctx.id = uint32_t(handle & 0xFFFFFFFFu);
-  ctx.active = int32_t(uint32_t(handle >> 32));
-  return ctx;
+ZoneHandle unpack_zone_handle(uint64_t handle) {
+  return reinterpret_cast<ZoneHandle>(handle);
 }
 
 } // namespace
@@ -68,7 +69,7 @@ extern "C" {
 
 MT_EXPORT void mt_tracy_set_thread_name(const char *name, size_t name_size) {
   auto owned_name = copy_string(name, name_size);
-  ___tracy_set_thread_name(owned_name.c_str());
+  tracy::SetThreadName(owned_name.c_str());
 }
 
 MT_EXPORT void mt_tracy_message(const char *text, size_t text_size,
@@ -78,26 +79,26 @@ MT_EXPORT void mt_tracy_message(const char *text, size_t text_size,
   }
 
   if (has_color) {
-    ___tracy_emit_messageC(text, text_size, color, 0);
+    TracyMessageC(text, text_size, color);
   } else {
-    ___tracy_emit_message(text, text_size, 0);
+    TracyMessage(text, text_size);
   }
 }
 
-MT_EXPORT void mt_tracy_frame_mark() { ___tracy_emit_frame_mark(nullptr); }
+MT_EXPORT void mt_tracy_frame_mark() { FrameMark; }
 
 MT_EXPORT void mt_tracy_frame_mark_named(const char *name, size_t name_size) {
-  ___tracy_emit_frame_mark(intern_string(name, name_size));
+  FrameMarkNamed(intern_string(name, name_size));
 }
 
 MT_EXPORT void mt_tracy_plot_f64(const char *name, size_t name_size,
                                  double value) {
-  ___tracy_emit_plot(intern_string(name, name_size), value);
+  TracyPlot(intern_string(name, name_size), value);
 }
 
 MT_EXPORT void mt_tracy_plot_i64(const char *name, size_t name_size,
                                  int64_t value) {
-  ___tracy_emit_plot_int(intern_string(name, name_size), value);
+  TracyPlot(intern_string(name, name_size), value);
 }
 
 MT_EXPORT uint64_t mt_tracy_zone_begin(const char *zone_name, size_t name_size,
@@ -106,44 +107,46 @@ MT_EXPORT uint64_t mt_tracy_zone_begin(const char *zone_name, size_t name_size,
                                        const char *file_name, size_t file_size,
                                        uint32_t line, uint32_t color,
                                        int32_t active) {
-  const auto *stable_zone_name =
-      name_size == 0 ? nullptr : intern_string(zone_name, name_size);
-  const auto *stable_function_name =
-      intern_string(function_name, function_size);
-  const auto *stable_file_name = intern_string(file_name, file_size);
-
-  uint64_t source_location;
-  if (stable_zone_name == nullptr) {
-    source_location =
-        ___tracy_alloc_srcloc(line, stable_file_name, file_size,
-                              stable_function_name, function_size, color);
-  } else {
-    source_location = ___tracy_alloc_srcloc_name(
-        line, stable_file_name, file_size, stable_function_name, function_size,
-        stable_zone_name, name_size, color);
+  if (zone_name == nullptr) {
+    name_size = 0;
+  }
+  if (function_name == nullptr) {
+    function_name = "";
+    function_size = 0;
+  }
+  if (file_name == nullptr) {
+    file_name = "";
+    file_size = 0;
   }
 
-  return pack_zone_context(
-      ___tracy_emit_zone_begin_alloc_callstack(source_location, 0, active));
+  return pack_zone_handle(new tracy::ScopedZone(
+      line, file_name, file_size, function_name, function_size,
+      name_size == 0 ? nullptr : zone_name, name_size, color, TRACY_CALLSTACK,
+      active != 0));
 }
 
 MT_EXPORT void mt_tracy_zone_end(uint64_t zone_handle) {
-  ___tracy_emit_zone_end(unpack_zone_context(zone_handle));
+  delete unpack_zone_handle(zone_handle);
 }
 
 MT_EXPORT void mt_tracy_zone_text(uint64_t zone_handle, const char *text,
                                   size_t text_size) {
-  if (text == nullptr && text_size != 0) {
+  auto *zone = unpack_zone_handle(zone_handle);
+  if (zone == nullptr || (text == nullptr && text_size != 0)) {
     return;
   }
-  ___tracy_emit_zone_text(unpack_zone_context(zone_handle), text, text_size);
+  zone->Text(text, text_size);
 }
 
 MT_EXPORT void mt_tracy_zone_value(uint64_t zone_handle, uint64_t value) {
-  ___tracy_emit_zone_value(unpack_zone_context(zone_handle), value);
+  auto *zone = unpack_zone_handle(zone_handle);
+  if (zone == nullptr) {
+    return;
+  }
+  zone->Value(value);
 }
 
-MT_EXPORT int32_t mt_tracy_is_connected() { return ___tracy_connected(); }
+MT_EXPORT int32_t mt_tracy_is_connected() { return TracyIsConnected ? 1 : 0; }
 
 MT_EXPORT void mt_tracy_sleep_ms(uint32_t milliseconds) {
   std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
