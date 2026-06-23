@@ -7,6 +7,7 @@ version = "0.1.0"
 
 [tasks]
 build-native = "cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release"
+build-profiler = "cmake -S tracy/profiler -B build/tracy-profiler -DCMAKE_BUILD_TYPE=Release && cmake --build build/tracy-profiler --config Release"
 example = { cmd = "DYLD_LIBRARY_PATH=build mojo run -I src -Xlinker -Lbuild -Xlinker -lmojotracy examples/basic.mojo", depends-on = ["build-native"] }
 build-example = { cmd = "mojo build -I src -Xlinker -Lbuild -Xlinker -lmojotracy -Xlinker -rpath -Xlinker @executable_path examples/basic.mojo -o build/basic", depends-on = ["build-native"] }
 
