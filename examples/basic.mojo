@@ -1,9 +1,15 @@
-from tracy import FunctionZone, Zone, frame_mark, is_connected, message, plot, plot_i64, set_thread_name, sleep_ms, wait_for_connection
+from mojo_tracy import FunctionZone, frame_mark, is_connected, message, plot, set_thread_name, sleep_ms, wait_for_connection
 
 def do_work(i: Int):
-    with FunctionZone("do_work"):
+    with FunctionZone[do_work]():
         message("inside do_work")
-        sleep_ms(32)
+        sleep_ms(3)
+        do_work2()
+
+def do_work2():
+    with FunctionZone[do_work2]():
+        message("inside do_work2")
+        sleep_ms(2)
 
 def main() raises:
     set_thread_name("mojo-tracy example")
@@ -17,14 +23,11 @@ def main() raises:
     while i < 120:
         do_work(i)
         plot("example.float", Float64(i) * 0.25)
-        plot_i64("example.count", Int64(i))
+        plot("example.count", Int64(i))
 
         frame_mark()
-        sleep_ms(16)
+        sleep_ms(5)
         i += 1
-
-    with Zone("custom zone", 0, True, "main"):
-        message("this zone has a custom display name and main as its source function")
 
     frame_mark("example")
     print("Tracy connected at exit:", is_connected())
