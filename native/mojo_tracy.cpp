@@ -119,10 +119,10 @@ MT_EXPORT uint64_t mt_tracy_zone_begin(const char *zone_name, size_t name_size,
     file_size = 0;
   }
 
-  return pack_zone_handle(new tracy::ScopedZone(
-      line, file_name, file_size, function_name, function_size,
-      name_size == 0 ? nullptr : zone_name, name_size, color, TRACY_CALLSTACK,
-      active != 0));
+  return pack_zone_handle(
+      new tracy::ScopedZone(line, file_name, file_size, function_name,
+                            function_size, name_size == 0 ? nullptr : zone_name,
+                            name_size, color, TRACY_CALLSTACK, active != 0));
 }
 
 MT_EXPORT void mt_tracy_zone_end(uint64_t zone_handle) {
