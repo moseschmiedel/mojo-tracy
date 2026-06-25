@@ -1,6 +1,6 @@
 context:
   name: mojo-tracy
-  version: "0.1.0"
+  version: "0.2.0"
 
 package:
   name: ${{ name }}
@@ -15,6 +15,7 @@ source:
       - native/**
       - src/**
       - LICENSE
+      - changelog.md
     exclude:
       - "**/.git/**"
       - "**/.pixi/**"
