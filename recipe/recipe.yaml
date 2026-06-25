@@ -1,0 +1,60 @@
+context:
+  name: mojo-tracy
+  version: "0.1.0"
+
+package:
+  name: ${{ name }}
+  version: ${{ version }}
+
+source:
+  path: ..
+  use_gitignore: false
+  filter:
+    include:
+      - CMakeLists.txt
+      - native/**
+      - src/**
+      - LICENSE
+    exclude:
+      - "**/.git/**"
+      - "**/.pixi/**"
+      - "**/build/**"
+      - "tracy/profiler/build/**"
+
+build:
+  number: 2
+
+requirements:
+  build:
+    - ${{ compiler('c') }}
+    - ${{ compiler('cxx') }}
+    - mojo-compiler ==1.0.0b3.dev2026062206
+    - cmake
+    - git
+    - if: unix
+      then: make
+  host:
+    - mojo-compiler ==1.0.0b3.dev2026062206
+  run:
+    - mojo-compiler ==1.0.0b3.dev2026062206
+
+tests:
+  - package_contents:
+      files:
+        - bin/tracy-profiler
+        - lib/mojo/tracy.mojoc
+      lib:
+        - mojotracy
+  - script:
+      file: smoke_test.sh
+
+about:
+  summary: Mojo bindings for the Tracy profiler
+  description: Mojo bindings and native shim for Tracy CPU zones, messages, frames, plots, thread names, and connection status.
+  license: MIT
+  license_file: LICENSE
+
+extra:
+  maintainers:
+    - moseschmiedel
+  project_name: mojo-tracy
