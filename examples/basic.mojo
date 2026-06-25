@@ -1,13 +1,13 @@
-from mojo_tracy import FunctionZone, frame_mark, is_connected, message, plot, set_thread_name, sleep_ms, wait_for_connection
+from tracy import Zone, frame_mark, is_connected, message, plot, set_thread_name, sleep_ms, wait_for_connection
 
 def do_work(i: Int):
-    with FunctionZone[do_work]():
+    with Zone().scoped[do_work]():
         message("inside do_work")
         sleep_ms(3)
         do_work2()
 
 def do_work2():
-    with FunctionZone[do_work2]():
+    with Zone(function_name="do_work2"):
         message("inside do_work2")
         sleep_ms(2)
 

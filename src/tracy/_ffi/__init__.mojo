@@ -1,5 +1,5 @@
 from std.ffi import external_call
-from .ffi_types import MtString
+from .types import MtString
 
 def mt_tracy_set_thread_name(name: MtString, name_size: UInt):
     external_call["mt_tracy_set_thread_name", NoneType, MtString, UInt](name, name_size)
