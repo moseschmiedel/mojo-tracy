@@ -32,10 +32,13 @@ requirements:
     - mojo-compiler ==1.0.0b3.dev2026062206
     - cmake
     - git
+    - pkg-config
     - if: unix
       then: make
   host:
     - mojo-compiler ==1.0.0b3.dev2026062206
+    - if: linux
+      then: dbus
   run:
     - mojo-compiler ==1.0.0b3.dev2026062206
 
