@@ -2,7 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## 0.1.0 - 2026-06-29
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/2.0.0/),
+
+## [0.2.0] - 2026-06-29
+
+### Added
+
+- Mojo functions are now No-Ops when Tracy is not enabled (`TRACY_ENABLE` is not defined).
+
+## [0.1.0] - 2026-06-29
 
 ### Added
 

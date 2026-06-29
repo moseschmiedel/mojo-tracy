@@ -62,11 +62,12 @@ Then import the Mojo module as usual:
 from tracy import Zone, frame_mark, message
 ```
 
-Your executable must also link against the native `mojotracy` library provided by the package. For example:
+Your executable must also link against the native `mojotracy` library provided by the package and define the `TRACY_ENABLED` compiler variable. For example:
 
 ```bash
 pixi run mojo run \
   -Xlinker -lmojotracy \
+  -DTRACY_ENABLED \
   main.mojo
 ```
 
