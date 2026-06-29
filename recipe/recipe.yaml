@@ -38,7 +38,11 @@ requirements:
   host:
     - mojo-compiler ==1.0.0b3.dev2026062206
     - if: linux
-      then: dbus
+      then:
+        - dbus
+        - libegl-devel
+        - libxkbcommon
+        - wayland
   run:
     - mojo-compiler ==1.0.0b3.dev2026062206
 
