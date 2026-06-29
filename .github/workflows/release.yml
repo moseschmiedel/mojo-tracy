@@ -1,0 +1,59 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-publish:
+    name: Build and publish (${{ matrix.target-platform }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target-platform: linux-64
+          - os: macos-14
+            target-platform: osx-arm64
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Build conda package
+        uses: prefix-dev/rattler-build-action@v0.2.38
+        with:
+          recipe-path: recipe/recipe.yaml
+          artifact-name: mojo-tracy-${{ matrix.target-platform }}
+          build-args: >-
+            --target-platform ${{ matrix.target-platform }}
+            --channel https://conda.modular.com/max-nightly
+            --channel conda-forge
+
+      - name: Publish to prefix.dev/tree-d
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          found=0
+          while IFS= read -r package; do
+            found=1
+            echo "Uploading ${package}"
+            rattler-build upload prefix --channel tree-d --skip-existing "${package}"
+          done < <(find output -type f \( -name "*.conda" -o -name "*.tar.bz2" \) -print)
+
+          if [ "${found}" -eq 0 ]; then
+            echo "No packages found under output/"
+            exit 1
+          fi

@@ -1,6 +1,6 @@
 context:
   name: mojo-tracy
-  version: "0.2.0"
+  version: "0.1.0"
 
 package:
   name: ${{ name }}
@@ -23,7 +23,7 @@ source:
       - "tracy/profiler/build/**"
 
 build:
-  number: 2
+  number: 0
 
 requirements:
   build:
