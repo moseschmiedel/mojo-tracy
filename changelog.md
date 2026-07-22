@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/2.0.0/),
 
+## [Unreleased]
+
+### Changed
+
+- Updated to Mojo `1.0.0b3.dev2026072206` (>=1.0.0b3.dev2026072206,<2).
+
 ## [0.2.0] - 2026-06-29
 
 ### Added

@@ -3,7 +3,7 @@ authors = ["Mose Schmiedel <mose@schmiednet.de>"]
 channels = ["https://conda.modular.com/max-nightly", "conda-forge"]
 name = "mojo-tracy"
 platforms = ["osx-arm64", "linux-64"]
-version = "0.2.0"
+version = "0.3.0"
 
 [tasks]
 build-native = "cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release"
@@ -13,5 +13,5 @@ example = { cmd = "DYLD_LIBRARY_PATH=build mojo run -I src -Xlinker -Lbuild -Xli
 build-example = { cmd = "mojo build -I src -Xlinker -Lbuild -Xlinker -lmojotracy -Xlinker -rpath -Xlinker @executable_path examples/basic.mojo -o build/basic", depends-on = ["build-native"] }
 
 [dependencies]
-mojo = "==1.0.0b3.dev2026062206"
-rattler-build = ">=0.67.0,<0.68"
+mojo = ">=1.0.0b3.dev2026072206,<2"
+rattler-build = ">=0.69.1,<0.70"
