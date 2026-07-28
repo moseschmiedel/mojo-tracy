@@ -1,6 +1,6 @@
 context:
   name: mojo-tracy
-  version: "0.3.0"
+  version: "0.4.0"
 
 package:
   name: ${{ name }}
@@ -29,14 +29,14 @@ requirements:
   build:
     - ${{ compiler('c') }}
     - ${{ compiler('cxx') }}
-    - mojo-compiler >=1.0.0b3.dev2026072206,<2
+    - mojo-compiler >=1.0.0b3.dev2026072806,<2
     - cmake
     - git
     - pkg-config
     - if: unix
       then: make
   host:
-    - mojo-compiler >=1.0.0b3.dev2026072206,<2
+    - mojo-compiler >=1.0.0b3.dev2026072806,<2
     - if: linux
       then:
         - dbus
@@ -44,7 +44,7 @@ requirements:
         - libxkbcommon
         - wayland
   run:
-    - mojo-compiler >=1.0.0b3.dev2026072206,<2
+    - mojo-compiler >=1.0.0b3.dev2026072806,<2
 
 tests:
   - package_contents:
