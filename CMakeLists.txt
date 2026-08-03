@@ -31,6 +31,13 @@ if(MOJO_TRACY_BUILD_PROFILER)
         "${tracy_BINARY_DIR}/profiler"
         EXCLUDE_FROM_ALL
     )
+
+    # Tracy 0.13.1 uses fixed-width integer types without including <cstdint>.
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        target_compile_options(tracy-profiler PRIVATE
+            "$<$<COMPILE_LANGUAGE:CXX>:-include;cstdint>"
+        )
+    endif()
 endif()
 
 add_library(mojotracy SHARED
