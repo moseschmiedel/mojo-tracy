@@ -1,4 +1,4 @@
-comptime MtString = UnsafePointer[UInt8, ImmUntrackedOrigin]
+comptime MtString = Pointer[UInt8, ImmUntrackedOrigin]
 
 
 def string_to_mt_string(str: String) -> Tuple[MtString, UInt]:

@@ -3,14 +3,17 @@ from std.sys.defines import is_defined
 from . import _ffi
 from ._ffi.types import string_to_mt_string, bool_to_i32
 
+
 def _check_tracy_enabled() -> Bool:
     return is_defined["TRACY_ENABLED"]()
+
 
 def set_thread_name(name: String):
     comptime if not _check_tracy_enabled():
         return
     var mt_string, mt_string_length = string_to_mt_string(name)
     _ffi.mt_tracy_set_thread_name(mt_string, mt_string_length)
+
 
 def message(text: String, color: Optional[UInt32] = None):
     comptime if not _check_tracy_enabled():
@@ -21,10 +24,12 @@ def message(text: String, color: Optional[UInt32] = None):
     else:
         _ffi.mt_tracy_message(mt_string, mt_string_length, 0, 0)
 
+
 def frame_mark():
     comptime if not _check_tracy_enabled():
         return
     _ffi.mt_tracy_frame_mark()
+
 
 def frame_mark(name: String):
     comptime if not _check_tracy_enabled():
@@ -32,11 +37,13 @@ def frame_mark(name: String):
     var mt_string, mt_string_length = string_to_mt_string(name)
     _ffi.mt_tracy_frame_mark_named(mt_string, mt_string_length)
 
+
 def plot(name: String, value: Float64):
     comptime if not _check_tracy_enabled():
         return
     var mt_string, mt_string_length = string_to_mt_string(name)
     _ffi.mt_tracy_plot_f64(mt_string, mt_string_length, value)
+
 
 def plot(name: String, value: Int64):
     comptime if not _check_tracy_enabled():
@@ -50,12 +57,16 @@ def is_connected() -> Bool:
         return False
     return _ffi.mt_tracy_is_connected() != 0
 
+
 def sleep_ms(milliseconds: UInt32):
     comptime if not _check_tracy_enabled():
         return
     _ffi.mt_tracy_sleep_ms(milliseconds)
 
-def wait_for_connection(timeout_ms: UInt32 = 5000, poll_ms: UInt32 = 100) -> Bool:
+
+def wait_for_connection(
+    timeout_ms: UInt32 = 5000, poll_ms: UInt32 = 100
+) -> Bool:
     comptime if not _check_tracy_enabled():
         return False
     var waited: UInt32 = 0
@@ -83,14 +94,15 @@ struct Zone(Movable):
         color: UInt32 = 0,
         active: Bool = True,
     ):
-
         self.function_name = function_name
         self.color = color
         self.active = active
         self.handle = 0
         self.entered = False
 
-    def scoped[func_type: AnyType, //, func: func_type](deinit self, out zone: Self):
+    def scoped[
+        func_type: AnyType, //, func: func_type
+    ](deinit self, out zone: Self):
         self.function_name = reflect_fn[func].linkage_name()
         zone = self^
 
@@ -103,8 +115,12 @@ struct Zone(Movable):
 
         var loc = call_location()
 
-        var function_string, function_string_length = string_to_mt_string(self.function_name)
-        var file_string, file_string_length = string_to_mt_string(loc.file_name())
+        var function_string, function_string_length = string_to_mt_string(
+            self.function_name
+        )
+        var file_string, file_string_length = string_to_mt_string(
+            loc.file_name()
+        )
         self.handle = _ffi.mt_tracy_zone_begin(
             function_string,
             0,
@@ -123,7 +139,7 @@ struct Zone(Movable):
             return
         self.end()
 
-    def __del__(deinit self):
+    def __deinit__(deinit self):
         comptime if not _check_tracy_enabled():
             return
         self.end()
