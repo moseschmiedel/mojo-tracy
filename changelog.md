@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/2.0.0/),
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-08-06
+
+### Changed
+
+- Updated to Mojo `1.1.0.dev2026080606` (>=1.1.0.dev2026080606,<2).
+
 ## [0.6.0] - 2026-08-04
 
 ### Changed
