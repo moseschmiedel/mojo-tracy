@@ -37,6 +37,9 @@ requirements:
       then: make
   host:
     - mojo-compiler >=1.1.0.dev2026080606,<2
+    - if: osx
+      then:
+        - clang
     - if: linux
       then:
         - dbus
