@@ -13,5 +13,5 @@ example = { cmd = "DYLD_LIBRARY_PATH=build mojo run -I src -Xlinker -Lbuild -Xli
 build-example = { cmd = "mojo build -I src -Xlinker -Lbuild -Xlinker -lmojotracy -Xlinker -rpath -Xlinker @executable_path examples/basic.mojo -o build/basic", depends-on = ["build-native"] }
 
 [dependencies]
-mojo = ">=1.0.0b3.dev2026080406,<2"
+mojo = ">=1.1.0.dev2026080606,<2"
 rattler-build = ">=0.72.2,<0.73"
