@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/2.0.0/),
 
 ## [Unreleased]
 
+## [0.7.1] - 2026-08-06
+
+### Fixed
+
+- Linker error of `tracy-profiler` under macOS: `libLTO.dylib not found`.
+
 ## [0.7.0] - 2026-08-06
 
 ### Changed
