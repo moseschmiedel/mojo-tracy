@@ -1,6 +1,6 @@
 context:
   name: mojo-tracy
-  version: "0.7.1"
+  version: "1.0.0"
 
 package:
   name: ${{ name }}
