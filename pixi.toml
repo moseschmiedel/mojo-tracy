@@ -1,6 +1,6 @@
 [workspace]
 authors = ["Mose Schmiedel <mose@schmiednet.de>"]
-channels = ["https://conda.modular.com/max-nightly", "conda-forge"]
+channels = ["https://conda.modular.com/max", "conda-forge"]
 name = "mojo-tracy"
 platforms = ["osx-arm64", "linux-64"]
 version = "0.7.1"
@@ -8,10 +8,14 @@ version = "0.7.1"
 [tasks]
 build-native = "cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release"
 build-profiler = "cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DMOJO_TRACY_BUILD_PROFILER=ON && cmake --build build --config Release --target tracy-profiler"
-package = "rattler-build build --recipe recipe/recipe.yaml --output-dir build/conda -c https://conda.modular.com/max-nightly -c conda-forge"
-example = { cmd = "DYLD_LIBRARY_PATH=build mojo run -I src -Xlinker -Lbuild -Xlinker -lmojotracy examples/basic.mojo", depends-on = ["build-native"] }
-build-example = { cmd = "mojo build -I src -Xlinker -Lbuild -Xlinker -lmojotracy -Xlinker -rpath -Xlinker @executable_path examples/basic.mojo -o build/basic", depends-on = ["build-native"] }
+package = "rattler-build build --recipe recipe/recipe.yaml --output-dir build/conda -c https://conda.modular.com/max -c conda-forge"
+example = { cmd = "DYLD_LIBRARY_PATH=build mojo run -I src -Xlinker -Lbuild -Xlinker -lmojotracy examples/basic.mojo", depends-on = [
+  "build-native",
+] }
+build-example = { cmd = "mojo build -I src -Xlinker -Lbuild -Xlinker -lmojotracy -Xlinker -rpath -Xlinker @executable_path examples/basic.mojo -o build/basic", depends-on = [
+  "build-native",
+] }
 
 [dependencies]
-mojo = ">=1.1.0.dev2026080606,<2"
+mojo = ">=1.0.0,<2"
 rattler-build = ">=0.72.2,<0.73"

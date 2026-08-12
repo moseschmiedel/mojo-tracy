@@ -29,14 +29,14 @@ requirements:
   build:
     - ${{ compiler('c') }}
     - ${{ compiler('cxx') }}
-    - mojo-compiler >=1.1.0.dev2026080606,<2
+    - mojo-compiler >=1.0.0,<2
     - cmake
     - git
     - pkg-config
     - if: unix
       then: make
   host:
-    - mojo-compiler >=1.1.0.dev2026080606,<2
+    - mojo-compiler >=1.0.0,<2
     - if: osx
       then:
         - clang
@@ -47,7 +47,7 @@ requirements:
         - libxkbcommon
         - wayland
   run:
-    - mojo-compiler >=1.1.0.dev2026080606,<2
+    - mojo-compiler >=1.0.0,<2
 
 tests:
   - package_contents:
