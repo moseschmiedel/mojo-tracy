@@ -20,7 +20,7 @@ Mojo bindings for the [Tracy](https://github.com/wolfpld/tracy) profiler.
 
 - [Pixi](https://pixi.sh/) for the provided development tasks
 - CMake and a C++17 compiler
-- Mojo `1.0.0b3.dev2026062206` as pinned in `pixi.toml`
+- Mojo `>=1.0.0`
 
 ## Quick start
 
@@ -52,8 +52,8 @@ Add `mojo-tracy` to your project's `pixi.toml` dependencies alongside Mojo:
 
 ```toml
 [dependencies]
-mojo = "==1.0.0b3.dev2026062206"
-mojo-tracy = ">=0.2.0"
+mojo = ">=1.0.0,<2"
+mojo-tracy = ">=1.0.0,<2"
 ```
 
 Then import the Mojo module as usual:

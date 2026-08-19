@@ -38,7 +38,7 @@ jobs:
           artifact-name: mojo-tracy-${{ matrix.target-platform }}
           build-args: >-
             --target-platform ${{ matrix.target-platform }}
-            --channel https://conda.modular.com/max-nightly
+            --channel https://conda.modular.com/max
             --channel conda-forge
 
       - name: Publish to prefix.dev/tree-d
