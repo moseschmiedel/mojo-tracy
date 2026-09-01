@@ -19,9 +19,21 @@ FetchContent_Declare(
 
 set(TRACY_ENABLE ON CACHE BOOL "Enable Tracy profiling")
 set(TRACY_ON_DEMAND ON CACHE BOOL "Use Tracy on-demand profiling")
+
 # Tracy 0.14 turned TRACY_CALLSTACK from a boolean toggle into a numeric
-# callstack capture depth (CACHE STRING); a boolean value here leaks into
-# the TRACY_CALLSTACK preprocessor define and breaks the build.
+# callstack capture depth (CACHE STRING). A build directory configured by an
+# older version of this file cached it as CACHE BOOL; since a non-forcing
+# set() to a differently-typed CACHE variable is a no-op, that stale `ON`
+# would otherwise survive and leak into the TRACY_CALLSTACK preprocessor
+# define, breaking the build. Drop the stale entry so it can be recreated
+# with the correct type below.
+if(DEFINED CACHE{TRACY_CALLSTACK})
+    get_property(_mojo_tracy_callstack_type CACHE TRACY_CALLSTACK PROPERTY TYPE)
+    if(NOT _mojo_tracy_callstack_type STREQUAL "STRING")
+        unset(TRACY_CALLSTACK CACHE)
+    endif()
+    unset(_mojo_tracy_callstack_type)
+endif()
 set(TRACY_CALLSTACK "10" CACHE STRING "Callstack collection depth for tracy regions")
 
 FetchContent_MakeAvailable(tracy)
@@ -35,7 +47,8 @@ if(MOJO_TRACY_BUILD_PROFILER)
         EXCLUDE_FROM_ALL
     )
 
-    # Tracy 0.13.1 uses fixed-width integer types without including <cstdint>.
+    # Tracy (still true as of 0.14.1) uses fixed-width integer types without
+    # including <cstdint>.
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         target_compile_options(tracy-profiler PRIVATE
             "$<$<COMPILE_LANGUAGE:CXX>:-include;cstdint>"
