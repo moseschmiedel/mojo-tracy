@@ -12,6 +12,9 @@ package = "rattler-build build --recipe recipe/recipe.yaml --output-dir build/co
 example = { cmd = "DYLD_LIBRARY_PATH=build mojo run -I src -Xlinker -Lbuild -Xlinker -lmojotracy examples/basic.mojo", depends-on = [
   "build-native",
 ] }
+test-comptime = { cmd = "DYLD_LIBRARY_PATH=build mojo run -I src -Xlinker -Lbuild -Xlinker -lmojotracy -DTRACY_ENABLED tests/comptime_noop.mojo", depends-on = [
+  "build-native",
+] }
 build-example = { cmd = "mojo build -I src -Xlinker -Lbuild -Xlinker -lmojotracy -Xlinker -rpath -Xlinker @executable_path examples/basic.mojo -o build/basic", depends-on = [
   "build-native",
 ] }
