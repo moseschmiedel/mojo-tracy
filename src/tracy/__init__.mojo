@@ -11,12 +11,16 @@ def _check_tracy_enabled() -> Bool:
 def set_thread_name(name: String):
     comptime if not _check_tracy_enabled():
         return
+    if __is_run_in_comptime_interpreter:
+        return
     var mt_string, mt_string_length = string_to_mt_string(name)
     _ffi.mt_tracy_set_thread_name(mt_string, mt_string_length)
 
 
 def message(text: String, color: Optional[UInt32] = None):
     comptime if not _check_tracy_enabled():
+        return
+    if __is_run_in_comptime_interpreter:
         return
     var mt_string, mt_string_length = string_to_mt_string(text)
     if color:
@@ -28,11 +32,15 @@ def message(text: String, color: Optional[UInt32] = None):
 def frame_mark():
     comptime if not _check_tracy_enabled():
         return
+    if __is_run_in_comptime_interpreter:
+        return
     _ffi.mt_tracy_frame_mark()
 
 
 def frame_mark(name: String):
     comptime if not _check_tracy_enabled():
+        return
+    if __is_run_in_comptime_interpreter:
         return
     var mt_string, mt_string_length = string_to_mt_string(name)
     _ffi.mt_tracy_frame_mark_named(mt_string, mt_string_length)
@@ -41,12 +49,16 @@ def frame_mark(name: String):
 def plot(name: String, value: Float64):
     comptime if not _check_tracy_enabled():
         return
+    if __is_run_in_comptime_interpreter:
+        return
     var mt_string, mt_string_length = string_to_mt_string(name)
     _ffi.mt_tracy_plot_f64(mt_string, mt_string_length, value)
 
 
 def plot(name: String, value: Int64):
     comptime if not _check_tracy_enabled():
+        return
+    if __is_run_in_comptime_interpreter:
         return
     var mt_string, mt_string_length = string_to_mt_string(name)
     _ffi.mt_tracy_plot_i64(mt_string, mt_string_length, value)
@@ -55,11 +67,15 @@ def plot(name: String, value: Int64):
 def is_connected() -> Bool:
     comptime if not _check_tracy_enabled():
         return False
+    if __is_run_in_comptime_interpreter:
+        return False
     return _ffi.mt_tracy_is_connected() != 0
 
 
 def sleep_ms(milliseconds: UInt32):
     comptime if not _check_tracy_enabled():
+        return
+    if __is_run_in_comptime_interpreter:
         return
     _ffi.mt_tracy_sleep_ms(milliseconds)
 
@@ -68,6 +84,8 @@ def wait_for_connection(
     timeout_ms: UInt32 = 5000, poll_ms: UInt32 = 100
 ) -> Bool:
     comptime if not _check_tracy_enabled():
+        return False
+    if __is_run_in_comptime_interpreter:
         return False
     var waited: UInt32 = 0
     while waited < timeout_ms:
@@ -110,6 +128,8 @@ struct Zone(Movable):
     def __enter__(mut self):
         comptime if not _check_tracy_enabled():
             return
+        if __is_run_in_comptime_interpreter:
+            return
         if self.entered:
             return
 
@@ -147,6 +167,8 @@ struct Zone(Movable):
     def end(mut self):
         comptime if not _check_tracy_enabled():
             return
+        if __is_run_in_comptime_interpreter:
+            return
         if not self.entered:
             return
 
@@ -157,6 +179,8 @@ struct Zone(Movable):
     def text(mut self, text: String):
         comptime if not _check_tracy_enabled():
             return
+        if __is_run_in_comptime_interpreter:
+            return
         if not self.entered:
             return
 
@@ -165,6 +189,8 @@ struct Zone(Movable):
 
     def value(mut self, value: UInt64):
         comptime if not _check_tracy_enabled():
+            return
+        if __is_run_in_comptime_interpreter:
             return
         if not self.entered:
             return

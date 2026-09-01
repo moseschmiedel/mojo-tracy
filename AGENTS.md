@@ -11,6 +11,7 @@ Main components:
 - `src/tracy/` - public Mojo API and FFI declarations
 - `native/mojo_tracy.cpp` - C++ shim around Tracy's client API
 - `examples/basic.mojo` - example program used for manual validation
+- `tests/` - standalone Mojo test files (compile/run via `pixi run`)
 - `recipe/` - rattler-build package recipe and smoke test
 - `CMakeLists.txt` - native build; fetches Tracy via CMake `FetchContent`
 - `pixi.toml` - development tasks and pinned Mojo toolchain
@@ -34,8 +35,9 @@ For most changes:
 
 1. Run `pixi run build-native`.
 2. If Mojo API or examples changed, run `pixi run example`.
-3. If packaging changed, run `pixi run package`.
-4. If profiler packaging or CMake profiler options changed, run `pixi run build-profiler`.
+3. If a change touches `comptime if`/`__is_run_in_comptime_interpreter` guards or FFI call sites in `src/tracy/__init__.mojo`, run `pixi run test-comptime`.
+4. If packaging changed, run `pixi run package`.
+5. If profiler packaging or CMake profiler options changed, run `pixi run build-profiler`.
 
 When running programs from source, remember that Mojo code must link against the native library:
 
