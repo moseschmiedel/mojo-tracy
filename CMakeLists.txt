@@ -12,14 +12,17 @@ include(FetchContent)
 FetchContent_Declare(
     tracy
     GIT_REPOSITORY https://github.com/wolfpld/tracy.git
-    GIT_TAG v0.13.1 # Change tracy version here!
+    GIT_TAG v0.14.1 # Change tracy version here!
     GIT_SHALLOW TRUE
     GIT_PROGRESS TRUE
 )
 
 set(TRACY_ENABLE ON CACHE BOOL "Enable Tracy profiling")
 set(TRACY_ON_DEMAND ON CACHE BOOL "Use Tracy on-demand profiling")
-set(TRACY_CALLSTACK ON CACHE BOOL "Enforce callstack collection for tracy regions")
+# Tracy 0.14 turned TRACY_CALLSTACK from a boolean toggle into a numeric
+# callstack capture depth (CACHE STRING); a boolean value here leaks into
+# the TRACY_CALLSTACK preprocessor define and breaks the build.
+set(TRACY_CALLSTACK "10" CACHE STRING "Callstack collection depth for tracy regions")
 
 FetchContent_MakeAvailable(tracy)
 

@@ -13,7 +13,7 @@ Mojo bindings for the [Tracy](https://github.com/wolfpld/tracy) profiler.
 - Frame marks, including named frames
 - Numeric plots (`Float64` and `Int64`)
 - Thread names and profiler connection checks
-- CMake build that fetches Tracy `v0.13.1`
+- CMake build that fetches Tracy `v0.14.1`
 - Optional Tracy profiler build target
 
 ## Requirements

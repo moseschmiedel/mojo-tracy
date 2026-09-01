@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/2.0.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- Updated the vendored Tracy dependency from `v0.13.1` to `v0.14.1`.
+- `TRACY_CALLSTACK` is now set as a numeric callstack capture depth (`10`) instead of a boolean `ON`/`OFF` toggle, matching Tracy 0.14's CMake option, which changed `TRACY_CALLSTACK` from a boolean flag into a `CACHE STRING` depth value. Setting it as a `CACHE BOOL` leaked the literal value into the `TRACY_CALLSTACK` preprocessor define and broke compilation of `native/mojo_tracy.cpp`.
+
 ## [1.0.1] - 2026-09-01
 
 ### Fixed
