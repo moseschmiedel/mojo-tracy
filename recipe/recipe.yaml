@@ -27,8 +27,17 @@ build:
 
 requirements:
   build:
-    - ${{ compiler('c') }}
-    - ${{ compiler('cxx') }}
+    - if: osx
+      then:
+        # Pin below Clang 23: newer conda-forge Clang/libc++ builds report
+        # __cpp_lib_atomic_ref as defined without actually declaring
+        # std::atomic_ref for our deployment target, breaking Tracy's
+        # vendored PPQSort dependency (see changelog).
+        - ${{ compiler('c') }} <23
+        - ${{ compiler('cxx') }} <23
+      else:
+        - ${{ compiler('c') }}
+        - ${{ compiler('cxx') }}
     - mojo-compiler >=1.0.0,<2
     - cmake
     - git
@@ -39,7 +48,7 @@ requirements:
     - mojo-compiler >=1.0.0,<2
     - if: osx
       then:
-        - clang
+        - clang <23
     - if: linux
       then:
         - dbus

@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/2.0.0/),
 ### Fixed
 
 - Tracy FFI calls no longer fail compilation when pulled into Mojo's comptime interpreter (e.g. via a caller's function result being forced into a comptime/parameter value); `Zone` and the other module-level FFI-calling functions now no-op instead of raising "unable to interpret call to unknown external function".
+- Pinned the macOS build toolchain to Clang `<23`. Newer conda-forge Clang/libc++ builds report `__cpp_lib_atomic_ref` as defined without actually declaring `std::atomic_ref` for our deployment target, which broke the `osx-arm64` package build inside Tracy's vendored `PPQSort` dependency.
 
 ## [1.0.0] - 2026-08-19
 
