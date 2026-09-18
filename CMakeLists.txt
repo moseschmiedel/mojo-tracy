@@ -62,8 +62,18 @@ if(MOJO_TRACY_BUILD_PROFILER)
     # including <cstdint>.
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         target_compile_options(tracy-profiler PRIVATE
-            "$<$<COMPILE_LANGUAGE:CXX>:-include;cstdint>"
+            "$<$<COMPILE_LANGUAGE:CXX>:SHELL:-include cstdint>"
+            "$<$<COMPILE_LANGUAGE:CXX>:SHELL:-include cfloat>"
         )
+
+        # Tracy's fetched pugixml dependency uses DBL_DIG without including
+        # <cfloat>, which fails with the conda Clang toolchain used to build
+        # release packages.
+        if(TARGET pugixml-static)
+            target_compile_options(pugixml-static PRIVATE
+                "$<$<COMPILE_LANGUAGE:CXX>:SHELL:-include cfloat>"
+            )
+        endif()
     endif()
 endif()
 

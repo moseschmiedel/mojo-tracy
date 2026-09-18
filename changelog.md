@@ -6,10 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/2.0.0/),
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-09-19
+
 ### Added
 
 - Package the `tracy-capture` headless trace-capture utility and provide a
   `pixi run build-capture` task for source builds.
+
+### Fixed
+
+- Build Tracy's profiler and fetched `pugixml` dependency with the defining
+  headers for floating-point limit macros, restoring package builds with the
+  pinned conda Clang toolchain.
 
 ## [1.1.0] - 2026-09-01
 
