@@ -62,6 +62,7 @@ tests:
   - package_contents:
       files:
         - bin/tracy-profiler
+        - bin/tracy-capture
         - lib/mojo/tracy.mojoc
       lib:
         - mojotracy

@@ -24,3 +24,6 @@ mojo run \
     -Xlinker -L"lib" \
     -Xlinker -lmojotracy \
     smoke.mojo
+
+capture_usage="$(tracy-capture 2>&1 || true)"
+grep -Fq "Usage: capture" <<<"${capture_usage}"

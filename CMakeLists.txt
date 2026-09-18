@@ -39,6 +39,17 @@ set(TRACY_CALLSTACK "10" CACHE STRING "Callstack collection depth for tracy regi
 FetchContent_MakeAvailable(tracy)
 
 option(MOJO_TRACY_BUILD_PROFILER "Add the Tracy profiler target from the fetched Tracy sources" OFF)
+option(MOJO_TRACY_BUILD_CAPTURE "Add the Tracy capture target from the fetched Tracy sources" OFF)
+
+# Both Tracy utility subprojects define common targets (for example,
+# TracyServer and TracyGetOpt). Build them in separate CMake trees instead of
+# allowing duplicate target definitions in a single build.
+if(MOJO_TRACY_BUILD_PROFILER AND MOJO_TRACY_BUILD_CAPTURE)
+    message(FATAL_ERROR
+        "MOJO_TRACY_BUILD_PROFILER and MOJO_TRACY_BUILD_CAPTURE must be built "
+        "in separate build directories."
+    )
+endif()
 
 if(MOJO_TRACY_BUILD_PROFILER)
     add_subdirectory(
@@ -51,6 +62,22 @@ if(MOJO_TRACY_BUILD_PROFILER)
     # including <cstdint>.
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         target_compile_options(tracy-profiler PRIVATE
+            "$<$<COMPILE_LANGUAGE:CXX>:-include;cstdint>"
+        )
+    endif()
+endif()
+
+if(MOJO_TRACY_BUILD_CAPTURE)
+    add_subdirectory(
+        "${tracy_SOURCE_DIR}/capture"
+        "${tracy_BINARY_DIR}/capture"
+        EXCLUDE_FROM_ALL
+    )
+
+    # Tracy's server sources still use fixed-width integer types without
+    # including <cstdint> in every translation unit.
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        target_compile_options(tracy-capture PRIVATE
             "$<$<COMPILE_LANGUAGE:CXX>:-include;cstdint>"
         )
     endif()
