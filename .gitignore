@@ -4,6 +4,7 @@
 
 # Build output
 build/
+build-capture/
 output/
 
 # clangd

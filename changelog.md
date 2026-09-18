@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/2.0.0/),
 
 ## [Unreleased]
 
+### Added
+
+- Package the `tracy-capture` headless trace-capture utility and provide a
+  `pixi run build-capture` task for source builds.
+
 ## [1.1.0] - 2026-09-01
 
 ### Changed

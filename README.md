@@ -15,6 +15,7 @@ Mojo bindings for the [Tracy](https://github.com/wolfpld/tracy) profiler.
 - Thread names and profiler connection checks
 - CMake build that fetches Tracy `v0.14.1`
 - Optional Tracy profiler build target
+- Optional headless Tracy capture target
 
 ## Requirements
 
@@ -45,6 +46,20 @@ pixi run build-profiler
 ```
 
 Then launch the generated profiler binary from the CMake build tree, connect to the running example, and capture the trace.
+
+To build Tracy's headless capture utility instead:
+
+```bash
+pixi run build-capture
+```
+
+`tracy-capture` waits for an instrumented application, writes a `.tracy` trace
+file, and can be used without the graphical profiler. For example, start the
+capture utility before running your application:
+
+```bash
+build-capture/_deps/tracy-build/capture/tracy-capture -o trace.tracy -s 5
+```
 
 ## Using mojo-tracy in your own project
 
@@ -84,6 +99,14 @@ When `mojo-tracy` is installed as a Pixi dependency, the Tracy UI is installed i
 
 ```bash
 pixi run tracy-profiler
+```
+
+The headless capture utility is installed alongside it. Start it before the
+instrumented application, then open the saved trace in the profiler:
+
+```bash
+pixi run tracy-capture -o trace.tracy -s 5
+pixi run tracy-profiler trace.tracy
 ```
 
 ## Using the module from source

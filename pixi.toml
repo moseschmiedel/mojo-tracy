@@ -8,6 +8,7 @@ version = "1.1.0"
 [tasks]
 build-native = "cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release"
 build-profiler = "cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DMOJO_TRACY_BUILD_PROFILER=ON && cmake --build build --config Release --target tracy-profiler"
+build-capture = "cmake -S . -B build-capture -DCMAKE_BUILD_TYPE=Release -DMOJO_TRACY_BUILD_CAPTURE=ON && cmake --build build-capture --config Release --target tracy-capture"
 package = "rattler-build build --recipe recipe/recipe.yaml --output-dir build/conda -c https://conda.modular.com/max -c conda-forge"
 example = { cmd = "DYLD_LIBRARY_PATH=build mojo run -I src -Xlinker -Lbuild -Xlinker -lmojotracy examples/basic.mojo", depends-on = [
   "build-native",

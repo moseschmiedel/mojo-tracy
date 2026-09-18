@@ -24,6 +24,7 @@ Use Pixi tasks when possible:
 pixi run build-native
 pixi run example
 pixi run build-profiler
+pixi run build-capture
 pixi run package
 ```
 
@@ -37,7 +38,7 @@ For most changes:
 2. If Mojo API or examples changed, run `pixi run example`.
 3. If a change touches `comptime if`/`__is_run_in_comptime_interpreter` guards or FFI call sites in `src/tracy/__init__.mojo`, run `pixi run test-comptime`.
 4. If packaging changed, run `pixi run package`.
-5. If profiler packaging or CMake profiler options changed, run `pixi run build-profiler`.
+5. If profiler or capture packaging or CMake options changed, run `pixi run build-profiler` and `pixi run build-capture`.
 
 When running programs from source, remember that Mojo code must link against the native library:
 
@@ -84,6 +85,7 @@ The conda package is expected to include:
 - `libmojotracy`
 - precompiled `lib/mojo/tracy.mojoc`
 - `bin/tracy-profiler`
+- `bin/tracy-capture`
 
 The package smoke test in `recipe/smoke_test.sh` should remain minimal and should verify import, linking, zones, messages, and frame marks.
 
@@ -92,7 +94,7 @@ The package smoke test in `recipe/smoke_test.sh` should remain minimal and shoul
 - Update `README.md` for user-facing API, build, installation, or packaging changes.
 - Update `changelog.md` for notable changes.
 - Mention that downstream users must link against `mojotracy` when using the Mojo module.
-- Mention that `tracy-profiler` can be run with `pixi run tracy-profiler` when installed as a Pixi dependency.
+- Mention that `tracy-profiler` and `tracy-capture` can be run with `pixi run` when installed as Pixi dependencies.
 
 ## Repository hygiene
 
