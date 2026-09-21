@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/2.0.0/),
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-09-21
+
+### Fixed
+
+- Restricted the supported Mojo toolchain range to `>=1.0.0,<1.1`, preventing
+  package resolution against incompatible Mojo 1.1 and later releases.
+
 ## [1.2.0] - 2026-09-19
 
 ### Added

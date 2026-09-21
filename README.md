@@ -67,7 +67,7 @@ Add `mojo-tracy` to your project's `pixi.toml` dependencies alongside Mojo:
 
 ```toml
 [dependencies]
-mojo = ">=1.0.0,<2"
+mojo = ">=1.0.0,<1.1"
 mojo-tracy = ">=1.0.0,<2"
 ```
 

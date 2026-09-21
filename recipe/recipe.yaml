@@ -1,6 +1,6 @@
 context:
   name: mojo-tracy
-  version: "1.2.0"
+  version: "1.2.1"
 
 package:
   name: ${{ name }}
@@ -38,14 +38,14 @@ requirements:
       else:
         - ${{ compiler('c') }}
         - ${{ compiler('cxx') }}
-    - mojo-compiler >=1.0.0,<2
+    - mojo-compiler >=1.0.0,<1.1
     - cmake
     - git
     - pkg-config
     - if: unix
       then: make
   host:
-    - mojo-compiler >=1.0.0,<2
+    - mojo-compiler >=1.0.0,<1.1
     - if: osx
       then:
         - clang <23
@@ -56,7 +56,7 @@ requirements:
         - libxkbcommon
         - wayland
   run:
-    - mojo-compiler >=1.0.0,<2
+    - mojo-compiler >=1.0.0,<1.1
 
 tests:
   - package_contents:
