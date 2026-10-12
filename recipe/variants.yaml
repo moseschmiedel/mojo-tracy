@@ -1,0 +1,14 @@
+# Build against an old C standard library so the package loads on older
+# systems (e.g. HPC clusters with glibc 2.34). Without an explicit sysroot the
+# Linux build picks up the CI host's glibc headers and links against
+# GLIBC_2.38-only symbols such as __isoc23_strtol.
+c_stdlib:
+  - if: linux
+    then: sysroot
+  - if: osx
+    then: macosx_deployment_target
+c_stdlib_version:
+  - if: linux
+    then: "2.28"
+  - if: osx
+    then: "11.0"

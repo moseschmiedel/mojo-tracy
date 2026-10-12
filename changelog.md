@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/2.0.0/),
 
 ## [Unreleased]
 
+## [1.2.2] - 2026-10-12
+
+### Fixed
+
+- Linux packages are now built against a glibc 2.28 sysroot instead of the CI
+  runner's system glibc. The 1.1.0–1.2.1 linux-64 builds were compiled with
+  glibc 2.39 headers on `ubuntu-latest` and required `GLIBC_2.38`
+  (`__isoc23_strtol` and friends), so `libmojotracy.so` failed to load on
+  systems with older glibc such as RHEL 9 based HPC clusters (glibc 2.34).
+  The package now declares `__glibc >=2.28`, so solvers refuse to install it
+  on systems where it cannot load.
+- macOS builds declare their C standard library baseline explicitly
+  (`MACOSX_DEPLOYMENT_TARGET` 11.0) via the new `recipe/variants.yaml`.
+
 ## [1.2.1] - 2026-09-21
 
 ### Fixed

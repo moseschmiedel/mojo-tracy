@@ -1,6 +1,6 @@
 context:
   name: mojo-tracy
-  version: "1.2.1"
+  version: "1.2.2"
 
 package:
   name: ${{ name }}
@@ -38,6 +38,7 @@ requirements:
       else:
         - ${{ compiler('c') }}
         - ${{ compiler('cxx') }}
+    - ${{ stdlib('c') }}
     - mojo-compiler >=1.0.0,<1.1
     - cmake
     - git
