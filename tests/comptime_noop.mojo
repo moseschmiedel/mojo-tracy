@@ -49,6 +49,9 @@ def _run_all_tracy_calls() -> Bool:
     with Zone("comptime zone"):
         pass
 
+    with Zone[enabled=False]("disabled comptime zone"):
+        pass
+
     var zone = Zone("comptime zone 2")
     zone.__enter__()
     zone.text("zone text")

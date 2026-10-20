@@ -179,6 +179,13 @@ wait_for_connection(timeout_ms: UInt32 = 5000, poll_ms: UInt32 = 100) -> Bool
 - `zone.text(text: String)` to attach text to the active zone
 - `zone.value(value: UInt64)` to attach a numeric value to the active zone
 - `zone.end()` for manual early termination
+- `Zone[enabled=False](...)` for a zone that compiles to a no-op, for example
+  `comptime DetailZone = Zone[enabled=is_defined["MY_DETAIL_ZONES"]()]`
+
+Every zone records a call stack of `TRACY_CALLSTACK` frames (10 in the
+package build). Set `MOJO_TRACY_CALLSTACK` to another depth, or to `0` to
+disable call stacks, when profiling frequently called functions: capturing a
+call stack costs far more than the zone itself.
 
 ## License
 

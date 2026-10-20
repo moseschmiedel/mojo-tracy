@@ -98,7 +98,15 @@ def wait_for_connection(
     return is_connected()
 
 
-struct Zone(Movable):
+struct Zone[enabled: Bool = True](Movable):
+    """A Tracy CPU zone.
+
+    Parameters:
+        enabled: Records the zone only when True. A disabled zone compiles to a
+            no-op even with `TRACY_ENABLED`, so libraries can keep detailed
+            zones behind their own compile-time switch.
+    """
+
     var function_name: String
     var color: UInt32
     var active: Bool
@@ -126,7 +134,7 @@ struct Zone(Movable):
 
     @always_inline
     def __enter__(mut self):
-        comptime if not _check_tracy_enabled():
+        comptime if not _check_tracy_enabled() or not Self.enabled:
             return
         if __is_run_in_comptime_interpreter:
             return
@@ -155,17 +163,17 @@ struct Zone(Movable):
         self.entered = True
 
     def __exit__(mut self):
-        comptime if not _check_tracy_enabled():
+        comptime if not _check_tracy_enabled() or not Self.enabled:
             return
         self.end()
 
     def __deinit__(deinit self):
-        comptime if not _check_tracy_enabled():
+        comptime if not _check_tracy_enabled() or not Self.enabled:
             return
         self.end()
 
     def end(mut self):
-        comptime if not _check_tracy_enabled():
+        comptime if not _check_tracy_enabled() or not Self.enabled:
             return
         if __is_run_in_comptime_interpreter:
             return
@@ -177,7 +185,7 @@ struct Zone(Movable):
         self.entered = False
 
     def text(mut self, text: String):
-        comptime if not _check_tracy_enabled():
+        comptime if not _check_tracy_enabled() or not Self.enabled:
             return
         if __is_run_in_comptime_interpreter:
             return
@@ -188,7 +196,7 @@ struct Zone(Movable):
         _ffi.mt_tracy_zone_text(self.handle, mt_string, mt_string_length)
 
     def value(mut self, value: UInt64):
-        comptime if not _check_tracy_enabled():
+        comptime if not _check_tracy_enabled() or not Self.enabled:
             return
         if __is_run_in_comptime_interpreter:
             return

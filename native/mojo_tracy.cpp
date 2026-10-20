@@ -3,6 +3,7 @@
 #include <common/TracySystem.hpp>
 #include <cstddef>
 #include <cstdint>
+#include <cstdlib>
 #include <mutex>
 #include <string>
 #include <thread>
@@ -24,6 +25,30 @@ struct g_string_storage_t {
 };
 
 static g_string_storage_t g_string_storage;
+
+/**
+ * Call stack depth recorded with every zone.
+ *
+ * Read once from `MOJO_TRACY_CALLSTACK` (0 disables call stacks, values are
+ * capped at Tracy's maximum of 62); defaults to the build's `TRACY_CALLSTACK`.
+ * Capturing a call stack costs far more than the zone itself, which distorts
+ * profiles of frequently called functions.
+ */
+int32_t callstack_depth() {
+  static const int32_t depth = [] {
+    const char *value = std::getenv("MOJO_TRACY_CALLSTACK");
+    if (value == nullptr || *value == '\0') {
+      return static_cast<int32_t>(TRACY_CALLSTACK);
+    }
+    char *end = nullptr;
+    long parsed = std::strtol(value, &end, 10);
+    if (end == value || parsed < 0) {
+      return static_cast<int32_t>(TRACY_CALLSTACK);
+    }
+    return static_cast<int32_t>(parsed > 62 ? 62 : parsed);
+  }();
+  return depth;
+}
 
 /**
  * Copies `size` amount of bytes from `data` into a `std::string`.
@@ -122,7 +147,7 @@ MT_EXPORT uint64_t mt_tracy_zone_begin(const char *zone_name, size_t name_size,
   return pack_zone_handle(
       new tracy::ScopedZone(line, file_name, file_size, function_name,
                             function_size, name_size == 0 ? nullptr : zone_name,
-                            name_size, color, TRACY_CALLSTACK, active != 0));
+                            name_size, color, callstack_depth(), active != 0));
 }
 
 MT_EXPORT void mt_tracy_zone_end(uint64_t zone_handle) {

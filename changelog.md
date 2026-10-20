@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/2.0.0/),
 
 ## [Unreleased]
 
+### Added
+
+- `Zone[enabled]` parameter: a zone with `enabled=False` compiles to a no-op
+  even with `TRACY_ENABLED`, so libraries can keep detailed zones behind their
+  own compile-time switch.
+- `MOJO_TRACY_CALLSTACK` environment variable sets the call stack depth
+  recorded per zone at run time; `0` disables call stacks. The default remains
+  the build's `TRACY_CALLSTACK` (10).
+
 ## [1.2.2] - 2026-10-12
 
 ### Fixed
